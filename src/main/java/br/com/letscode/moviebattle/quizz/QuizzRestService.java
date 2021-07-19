@@ -4,6 +4,7 @@ import br.com.letscode.moviebattle.jogador.JogadorRestService;
 import br.com.letscode.moviebattle.movie.Movie;
 import br.com.letscode.moviebattle.movie.MovieRestRepository;
 import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizz;
+import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizzRepository;
 import br.com.letscode.moviebattle.quizz.moviequizz.MovieQuizz;
 import br.com.letscode.moviebattle.quizz.moviequizz.MovieQuizzService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class QuizzRestService {
     private final MovieQuizzService movieQuizzService;
     private final MovieRestRepository movieRestRepository;
     private final JogadorRestService jogadorRestService;
+    private final JogadorQuizzRepository jogadorQuizzRepository;
     private final QuizzRestRepository quizzRestRepository;
 
     public List<MovieQuizz> listMovies() throws IOException {
@@ -40,7 +42,10 @@ public class QuizzRestService {
             Boolean resposta = comparacao(quizz.getImdbId(), moviesRatingList);
             quizz.setResposta(resposta);
             jogadorQuizzList.add(score(quizz, jogadorQuizz));
-            quizzRestRepository.inserirArquivo(jogadorQuizzList);
+            jogadorQuizzRepository.inserirArquivo(jogadorQuizzList);
+            if (jogadorQuizz.getVida() == 0) {
+                quizzRestRepository.inserirArquivo(jogadorQuizzList);
+            }
             return resposta;
         }
         throw new JogadorOuSenhaErradosException();
@@ -56,7 +61,7 @@ public class QuizzRestService {
     }
 
     private List<JogadorQuizz> formatarJogador(JogadorQuizz jogadorQuizz) throws IOException {
-        var listaQuizz = quizzRestRepository.listAll();
+        var listaQuizz = jogadorQuizzRepository.listAll();
         for (JogadorQuizz jogador : listaQuizz) {
             if (jogador.getNome().equals(jogadorQuizz.getNome()) && jogador.getVida() > 0) {
                     jogadorQuizz.setRodada(jogador.getRodada() + 1);

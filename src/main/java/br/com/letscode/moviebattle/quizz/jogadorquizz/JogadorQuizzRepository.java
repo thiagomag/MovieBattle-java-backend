@@ -1,8 +1,4 @@
-package br.com.letscode.moviebattle.quizz;
-
-import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizz;
-import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizzScoreComparator;
-import org.springframework.stereotype.Component;
+package br.com.letscode.moviebattle.quizz.jogadorquizz;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
@@ -18,10 +14,9 @@ import java.util.StringTokenizer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Component
-public class QuizzRestRepository {
+public class JogadorQuizzRepository {
 
-    private String caminho = "src/main/resources/dados/ranking.csv";
+    private String caminho = "src/main/resources/dados/jogos.csv";
 
     private Path path;
 
@@ -37,11 +32,10 @@ public class QuizzRestRepository {
         }
     }
 
-    public void inserirArquivo(List<JogadorQuizz> rankingList) throws IOException {
+    public void inserirArquivo(List<JogadorQuizz> jogadorQuizzList) throws IOException {
         Files.deleteIfExists(path);
         init();
-        rankingList.sort(new JogadorQuizzScoreComparator());
-        for (JogadorQuizz jogadorQuizz : rankingList) {
+        for (JogadorQuizz jogadorQuizz : jogadorQuizzList) {
             write(format(jogadorQuizz), StandardOpenOption.APPEND);
         }
     }
@@ -54,17 +48,18 @@ public class QuizzRestRepository {
     }
 
     public List<JogadorQuizz> listAll() throws IOException {
-        List<JogadorQuizz> rankingList;
+        List<JogadorQuizz> quizzList;
         try (BufferedReader br = Files.newBufferedReader(path)) {
-            rankingList = br.lines().filter(Objects::nonNull).filter(Predicate.not(String::isEmpty)).map(this::convert).collect(Collectors.toList());
+            quizzList = br.lines().filter(Objects::nonNull).filter(Predicate.not(String::isEmpty)).map(this::convert).collect(Collectors.toList());
         }
-        rankingList.sort(new JogadorQuizzScoreComparator());
-        return rankingList;
+        return quizzList;
     }
 
     private String format(JogadorQuizz jogadorQuizz) {
-        return String.format("%s,%d\r\n",
+        return String.format("%s,%s,%d,%d\r\n",
                 jogadorQuizz.getNome(),
+                jogadorQuizz.getRodada(),
+                jogadorQuizz.getVida(),
                 jogadorQuizz.getScore());
     }
 
@@ -72,6 +67,8 @@ public class QuizzRestRepository {
         StringTokenizer token = new StringTokenizer(linha, ",");
         return JogadorQuizz.builder()
                 .nome(token.nextToken())
+                .rodada(Integer.parseInt(token.nextToken()))
+                .vida(Integer.parseInt(token.nextToken()))
                 .score(Integer.parseInt(token.nextToken()))
                 .build();
     }
