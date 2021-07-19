@@ -1,6 +1,5 @@
 package br.com.letscode.moviebattle.quizz;
 
-import br.com.letscode.moviebattle.jogador.Jogador;
 import br.com.letscode.moviebattle.quizz.moviequizz.MovieQuizz;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +22,6 @@ public class QuizzRestController {
 
     @PostMapping
     public Boolean jogada(@RequestBody Quizz quizz) throws NoSuchAlgorithmException, IOException {
-        Boolean resultado = quizzService.jogada(quizz.getJogador(), quizz.getImdbId());
-        quizz.setResposta(resultado);
-        quizzService.score(quizz);
-        return resultado;
+        return quizzService.jogada(quizz);
     }
 }

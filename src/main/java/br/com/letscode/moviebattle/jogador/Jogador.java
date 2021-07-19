@@ -14,6 +14,4 @@ public class Jogador {
 
     private String user;
     private String password;
-    private Integer vida = 3;
-    private Integer score = 0;
 }

@@ -18,5 +18,4 @@ public class Quizz {
     private Jogador jogador;
     private String imdbId;
     private Boolean resposta;
-
 }
