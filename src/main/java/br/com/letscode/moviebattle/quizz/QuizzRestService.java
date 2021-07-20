@@ -43,8 +43,10 @@ public class QuizzRestService {
             quizz.setResposta(resposta);
             jogadorQuizzList.add(score(quizz, jogadorQuizz));
             jogadorQuizzRepository.inserirArquivo(jogadorQuizzList);
-            if (jogadorQuizz.getVida() == 0) {
+            if (jogadorQuizz.getVida() == 0 || jogadorQuizz.getRodada() == 10) {
                 quizzRestRepository.inserirArquivo(jogadorQuizzList);
+                List<JogadorQuizz> rankingList = quizzRestRepository.listAll();
+                throw new AcabouJogoException(rankingList);
             }
             return resposta;
         }
@@ -63,7 +65,7 @@ public class QuizzRestService {
     private List<JogadorQuizz> formatarJogador(JogadorQuizz jogadorQuizz) throws IOException {
         var listaQuizz = jogadorQuizzRepository.listAll();
         for (JogadorQuizz jogador : listaQuizz) {
-            if (jogador.getNome().equals(jogadorQuizz.getNome()) && jogador.getVida() > 0) {
+            if (jogador.getNome().equals(jogadorQuizz.getNome()) && jogador.getVida() > 0 && jogadorQuizz.getRodada() <= 10) {
                     jogadorQuizz.setRodada(jogador.getRodada() + 1);
                     jogadorQuizz.setVida(jogador.getVida());
                     jogadorQuizz.setScore(jogador.getScore());
@@ -100,5 +102,4 @@ public class QuizzRestService {
         }
         return false;
     }
-
 }

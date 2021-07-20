@@ -1,5 +1,7 @@
 package br.com.letscode.moviebattle.quizz.jogadorquizz;
 
+import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,6 +16,7 @@ import java.util.StringTokenizer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Component
 public class JogadorQuizzRepository {
 
     private String caminho = "src/main/resources/dados/jogos.csv";
@@ -56,7 +59,7 @@ public class JogadorQuizzRepository {
     }
 
     private String format(JogadorQuizz jogadorQuizz) {
-        return String.format("%s,%s,%d,%d\r\n",
+        return String.format("%s;%s;%d;%d\r\n",
                 jogadorQuizz.getNome(),
                 jogadorQuizz.getRodada(),
                 jogadorQuizz.getVida(),
@@ -64,7 +67,7 @@ public class JogadorQuizzRepository {
     }
 
     private JogadorQuizz convert(String linha) {
-        StringTokenizer token = new StringTokenizer(linha, ",");
+        StringTokenizer token = new StringTokenizer(linha, ";");
         return JogadorQuizz.builder()
                 .nome(token.nextToken())
                 .rodada(Integer.parseInt(token.nextToken()))

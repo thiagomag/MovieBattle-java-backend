@@ -10,7 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.function.Predicate;
@@ -56,15 +58,16 @@ public class MovieRestRepository {
     }
 
     private String format(Movie movie) {
-        return String.format("%s,%s,%s,%f\r\n",
+        NumberFormat rating = NumberFormat.getNumberInstance(Locale.US);
+        return String.format("%s;%s;%s;%s\r\n",
                 movie.getTitle(),
                 movie.getYear(),
                 movie.getImdbId(),
-                movie.getRating());
+                rating.format(movie.getRating()));
     }
 
     private Movie convert(String linha) {
-        StringTokenizer token = new StringTokenizer(linha, ",");
+        StringTokenizer token = new StringTokenizer(linha, ";");
         return Movie.builder()
                 .title(token.nextToken())
                 .year(Integer.valueOf(token.nextToken()))

@@ -63,13 +63,13 @@ public class QuizzRestRepository {
     }
 
     private String format(JogadorQuizz jogadorQuizz) {
-        return String.format("%s,%d\r\n",
+        return String.format("%s;%d\r\n",
                 jogadorQuizz.getNome(),
                 jogadorQuizz.getScore());
     }
 
     private JogadorQuizz convert(String linha) {
-        StringTokenizer token = new StringTokenizer(linha, ",");
+        StringTokenizer token = new StringTokenizer(linha, ";");
         return JogadorQuizz.builder()
                 .nome(token.nextToken())
                 .score(Integer.parseInt(token.nextToken()))
