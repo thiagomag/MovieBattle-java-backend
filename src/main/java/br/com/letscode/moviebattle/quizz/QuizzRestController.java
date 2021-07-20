@@ -1,6 +1,7 @@
 package br.com.letscode.moviebattle.quizz;
 
-import br.com.letscode.moviebattle.quizz.moviequizz.MovieQuizz;
+import br.com.letscode.moviebattle.movie.Movie;
+import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizz;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,21 @@ public class QuizzRestController {
     private final QuizzRestService quizzService;
 
     @GetMapping
-    public List<MovieQuizz> listarFilmes() throws IOException {
+    public List<Movie> listarFilmes() throws IOException {
         return this.quizzService.listMovies();
     }
 
+    @GetMapping("/ranking")
+    public List<JogadorQuizz> listarRanking() throws IOException {
+        return this.quizzService.listarRanking();
+    }
+
     @PostMapping
-    public Boolean jogada(@RequestBody Quizz quizz) throws NoSuchAlgorithmException, IOException {
-        return quizzService.jogada(quizz);
+    public String jogada(@RequestBody Quizz quizz) throws NoSuchAlgorithmException, IOException {
+        try {
+            return String.valueOf(quizzService.jogada(quizz));
+        } catch (JogadorOuSenhaErradosException | AcabouJogoException e) {
+            return e.getMessage();
+        }
     }
 }
