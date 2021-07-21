@@ -1,7 +1,6 @@
 package br.com.letscode.moviebattle.quizz;
 
 import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizz;
-import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizzScoreComparator;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -40,7 +40,7 @@ public class QuizzRestRepository {
     public void inserirArquivo(List<JogadorQuizz> rankingList) throws IOException {
         Files.deleteIfExists(path);
         init();
-        rankingList.sort(new JogadorQuizzScoreComparator());
+        rankingList.sort(Comparator.comparing(JogadorQuizz::getScore));
         for (JogadorQuizz jogadorQuizz : rankingList) {
             write(format(jogadorQuizz), StandardOpenOption.APPEND);
         }
@@ -58,7 +58,7 @@ public class QuizzRestRepository {
         try (BufferedReader br = Files.newBufferedReader(path)) {
             rankingList = br.lines().filter(Objects::nonNull).filter(Predicate.not(String::isEmpty)).map(this::convert).collect(Collectors.toList());
         }
-        rankingList.sort(new JogadorQuizzScoreComparator());
+        rankingList.sort(Comparator.comparing(JogadorQuizz::getScore));
         return rankingList;
     }
 

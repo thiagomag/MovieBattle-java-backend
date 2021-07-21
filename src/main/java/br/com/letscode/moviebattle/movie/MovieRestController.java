@@ -14,15 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MovieRestController {
 
-    private final MovieService movieService;
+    private final MovieRestService movieRestService;
 
     @GetMapping
     public List<Movie> filmesParaQuizz(@RequestParam List<String> name) throws IOException {
-        return movieService.salvarFilmes(name);
+        return movieRestService.salvarFilmes(name);
     }
 
     @GetMapping("/todos")
     public List<Movie> listar() throws IOException {
-        return movieService.listarTodos();
+        return movieRestService.listarTodos();
     }
 }

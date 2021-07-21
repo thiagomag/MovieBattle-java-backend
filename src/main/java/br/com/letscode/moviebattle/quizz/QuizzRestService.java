@@ -2,9 +2,10 @@ package br.com.letscode.moviebattle.quizz;
 
 import br.com.letscode.moviebattle.jogador.JogadorRestService;
 import br.com.letscode.moviebattle.movie.Movie;
-import br.com.letscode.moviebattle.movie.MovieService;
+import br.com.letscode.moviebattle.movie.MovieRestService;
 import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizz;
 import br.com.letscode.moviebattle.quizz.jogadorquizz.JogadorQuizzRepository;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +13,20 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+@Data
 @Service
 @RequiredArgsConstructor
 public class QuizzRestService {
 
     private List<Movie> movieList;
 
-    private final MovieService movieService;
+    private final MovieRestService movieRestService;
     private final JogadorRestService jogadorRestService;
     private final JogadorQuizzRepository jogadorQuizzRepository;
     private final QuizzRestRepository quizzRestRepository;
 
     public List<Movie> listMovies() throws IOException {
-        movieList = movieService.escolherFilme();
+        movieList = movieRestService.escolherFilme();
         return movieList;
     }
 
@@ -34,15 +36,13 @@ public class QuizzRestService {
                     .nome(quizz.getJogador().getUser())
                     .build();
             List<JogadorQuizz> jogadorQuizzList = formatarJogador(jogadorQuizz);
-            List<Movie> moviesRatingList = listMovies();
-            Boolean resposta = comparacao(quizz.getImdbId(), moviesRatingList);
+            Boolean resposta = comparacao(quizz.getImdbId(), movieList);
             quizz.setResposta(resposta);
             jogadorQuizzList.add(score(quizz, jogadorQuizz));
             jogadorQuizzRepository.inserirArquivo(jogadorQuizzList);
             if (jogadorQuizz.getVida() == 0) {
                 quizzRestRepository.inserirArquivo(jogadorQuizzList);
-                List<JogadorQuizz> rankingList = quizzRestRepository.listAll();
-                throw new AcabouJogoException(rankingList);
+                throw new AcabouJogoException(quizzRestRepository.listAll());
             }
             return resposta;
         }
@@ -81,7 +81,8 @@ public class QuizzRestService {
         if (moviesRatingList.get(0).getImdbId().equals(imdbId)) {
             return moviesRatingList.get(0).getRating() >= moviesRatingList.get(1).getRating();
         } else if (moviesRatingList.get(1).getImdbId().equals(imdbId)) {
-            return moviesRatingList.get(1).getImdbId().equals(imdbId);
+            return moviesRatingList.get(1).getRating() >= moviesRatingList.get(0).getRating();
+
         }
         return false;
     }

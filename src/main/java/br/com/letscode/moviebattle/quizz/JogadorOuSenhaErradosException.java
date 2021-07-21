@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class JogadorOuSenhaErradosException extends RuntimeException {
     public JogadorOuSenhaErradosException() {
-        super("Inform um jogador e/ou senha corretas");
+        super("Informe um jogador e/ou senha corretas");
     }
 }
