@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("quizz")
@@ -17,7 +18,7 @@ public class QuizzRestController {
     private final QuizzRestService quizzService;
 
     @GetMapping
-    public List<Movie> listarFilmes() throws IOException {
+    public Set<Movie> listarFilmes() throws IOException {
         return this.quizzService.listMovies();
     }
 

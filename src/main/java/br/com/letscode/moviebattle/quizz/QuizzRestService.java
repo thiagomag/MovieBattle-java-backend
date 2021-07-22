@@ -11,21 +11,23 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Service
 @RequiredArgsConstructor
 public class QuizzRestService {
 
-    private List<Movie> movieList;
+    private Set<Movie> movieList;
 
     private final MovieRestService movieRestService;
     private final JogadorRestService jogadorRestService;
     private final JogadorQuizzRepository jogadorQuizzRepository;
     private final QuizzRestRepository quizzRestRepository;
 
-    public List<Movie> listMovies() throws IOException {
+    public Set<Movie> listMovies() throws IOException {
         movieList = movieRestService.escolherFilme();
         return movieList;
     }
@@ -77,12 +79,12 @@ public class QuizzRestService {
         return listaQuizz;
     }
 
-    private Boolean comparacao(String imdbId, List<Movie> moviesRatingList) {
-        if (moviesRatingList.get(0).getImdbId().equals(imdbId)) {
-            return moviesRatingList.get(0).getRating() >= moviesRatingList.get(1).getRating();
-        } else if (moviesRatingList.get(1).getImdbId().equals(imdbId)) {
-            return moviesRatingList.get(1).getRating() >= moviesRatingList.get(0).getRating();
-
+    private Boolean comparacao(String imdbId, Set<Movie> moviesRatingList) {
+        var movieList = new ArrayList<>(moviesRatingList);
+        if (movieList.get(0).getImdbId().equals(imdbId)) {
+            return movieList.get(0).getRating() >= movieList.get(1).getRating();
+        } else if (movieList.get(1).getImdbId().equals(imdbId)) {
+            return movieList.get(1).getRating() >= movieList.get(0).getRating();
         }
         return false;
     }

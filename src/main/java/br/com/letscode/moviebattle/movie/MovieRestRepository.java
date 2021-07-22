@@ -50,15 +50,13 @@ public class MovieRestRepository {
 
 
     public List<Movie> listAll() throws IOException {
-        List<Movie> movies;
         try (BufferedReader br = Files.newBufferedReader(path)) {
-            movies = br.lines().filter(Objects::nonNull).filter(Predicate.not(String::isEmpty)).map(this::convert).collect(Collectors.toList());
+            return br.lines().filter(Objects::nonNull).filter(Predicate.not(String::isEmpty)).map(this::convert).collect(Collectors.toList());
         }
-        return movies;
     }
 
     private String format(Movie movie) {
-        NumberFormat rating = NumberFormat.getNumberInstance(Locale.US);
+        var rating = NumberFormat.getNumberInstance(Locale.US);
         return String.format("%s;%s;%s;%s\r\n",
                 movie.getTitle(),
                 movie.getYear(),

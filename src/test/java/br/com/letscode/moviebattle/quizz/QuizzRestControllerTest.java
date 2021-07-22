@@ -12,7 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,8 +43,8 @@ public class QuizzRestControllerTest {
         this.mockMvc.perform(get("/quizz"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(String.valueOf(movieRestService.getDuplaFilmes().get(0).getTitle()))))
-                .andExpect(content().string(containsString(String.valueOf(movieRestService.getDuplaFilmes().get(1).getTitle()))));
+                .andExpect(content().string(containsString(String.valueOf(new ArrayList<>(movieRestService.getDuplaFilmes()).get(0).getTitle()))))
+                .andExpect(content().string(containsString(String.valueOf(new ArrayList<>(movieRestService.getDuplaFilmes()).get(1).getTitle()))));
     }
 
     @Test
@@ -58,7 +59,7 @@ public class QuizzRestControllerTest {
     void jogadaTestTrue() throws Exception {
         Jogador jogador = new Jogador("Thiago", "12345");
         Quizz quizz = Quizz.builder().jogador(jogador).imdbId("tt0848228").build();
-        List<Movie> movieList = new ArrayList<>();
+        Set<Movie> movieList = new LinkedHashSet<>();
         movieList.add(Movie.builder().title("Batman v Superman: Dawn of Justice").year(2016).imdbId("tt2975590").rating(6.4).build());
         movieList.add(Movie.builder().title("The Avengers").year(2012).imdbId("tt0848228").rating(8.0).build());
         quizzRestService.setMovieList(movieList);
@@ -74,7 +75,7 @@ public class QuizzRestControllerTest {
     void jogadaTestFalse() throws Exception {
         Jogador jogador = new Jogador("Thiago", "12345");
         Quizz quizz = Quizz.builder().jogador(jogador).imdbId("tt2975590").build();
-        List<Movie> movieList = new ArrayList<>();
+        Set<Movie> movieList = new LinkedHashSet<>();
         movieList.add(Movie.builder().title("Batman v Superman: Dawn of Justice").year(2016).imdbId("tt2975590").rating(6.4).build());
         movieList.add(Movie.builder().title("The Avengers").year(2012).imdbId("tt0848228").rating(8.0).build());
         quizzRestService.setMovieList(movieList);
@@ -90,7 +91,7 @@ public class QuizzRestControllerTest {
     void jogadaTestImdbIdErrado() throws Exception {
         Jogador jogador = new Jogador("Thiago", "12345");
         Quizz quizz = Quizz.builder().jogador(jogador).imdbId("tt458961").build();
-        List<Movie> movieList = new ArrayList<>();
+        Set<Movie> movieList = new LinkedHashSet<>();
         movieList.add(Movie.builder().title("Batman v Superman: Dawn of Justice").year(2016).imdbId("tt2975590").rating(6.4).build());
         movieList.add(Movie.builder().title("The Avengers").year(2012).imdbId("tt0848228").rating(8.0).build());
         quizzRestService.setMovieList(movieList);

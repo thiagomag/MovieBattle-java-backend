@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -19,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MovieRestService {
 
-    private List<Movie> duplaFilmes;
+    private Set<Movie> duplaFilmes;
     private List<Movie> movieList;
 
     private final MovieRestRepository movieRepository;
@@ -36,23 +33,18 @@ public class MovieRestService {
         return movies.get(random.nextInt(movies.size()));
     }
 
-    public List<Movie> escolherFilme() throws IOException {
-        duplaFilmes = new ArrayList<>();
-        var primeiroFilme = filmeAleatorio();
-        duplaFilmes.add(primeiroFilme);
-        Movie segundoFilme;
-        do {
-            segundoFilme = filmeAleatorio();
-        } while (primeiroFilme.equals(segundoFilme));
-        duplaFilmes.add(segundoFilme);
+    public Set<Movie> escolherFilme() throws IOException {
+        duplaFilmes = new LinkedHashSet<>();
+        duplaFilmes.add(filmeAleatorio());
+        duplaFilmes.add(filmeAleatorio());
         return duplaFilmes;
     }
 
     public List<Movie> salvarFilmes(List<String> name) throws IOException {
-        List<ResultSearch> resultList = name.stream()
+        var resultList = name.stream()
                 .map(this.minimalRestRepository::search)
                 .collect(Collectors.toList());
-        ResultSearch reduce = reduce(resultList);
+        var reduce = reduce(resultList);
         movieList = new ArrayList<>();
         for(int i = 0; i < reduce.getResultList().size(); i++) {
             var movie = Movie.builder()
